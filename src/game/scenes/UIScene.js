@@ -37,8 +37,17 @@ export class UIScene extends Scene {
             align: 'center'
         }).setOrigin(0.5);
 
+        this.tensionText = this.add.text(this.scale.width/2, this.scale.height / 2 + 32, `Line Tension: 0`, {
+            fontSize: '16px',
+            align: 'center'
+        }).setOrigin(0.5);
+
         this.gameScene.events.on('promptChanged', (newPrompt) => {
             this.fishyPrompt.setText(`FISHY PROMPT: ${newPrompt}`);
+        });
+
+        this.gameScene.events.on('tensionChange', (tension) => {
+            this.tensionText.setText(`Line Tension: ${tension}`);
         });
         
 

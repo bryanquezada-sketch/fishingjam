@@ -43,8 +43,8 @@ export class Game extends Scene
             this.checkPromptMatch();
         });
 
-        this.fishTimerMin = 1200
-        this.fishTimerMax = 3000
+        this.fishTimerMin = 2000
+        this.fishTimerMax = 4000
 
         this.activeFishingTimer = this.time.addEvent({
             delay: Phaser.Math.Between(this.fishTimerMin, this.fishTimerMax),
@@ -54,15 +54,49 @@ export class Game extends Scene
             loop: true,
         });
 
+        this.lineTension = 0;
+        
+        this.passiveTension = this.time.addEvent({
+            delay: 1000,
+            callback: this.addPassiveTension,
+            args: [],
+            callbackScope: this,
+            loop: true
+        });
+
+        this.fishStamina = 100;
         
     }
 
+    addPassiveTension(){
+        this.lineTension += 1;
+        this.events.emit('tensionChange', this.lineTension);
+    }
+
     checkPromptMatch(){
-        if (this.lastKeyPressed.key === this.correctInput) {
-            console.log('CORRECT INPUT!')
-        } else {
+        if (this.lastKeyPressed.key.toLowerCase() === this.correctInput) {
+            //console.log('CORRECT INPUT!');
+            if (this.currentPrompt === "BIG-REEL") {
+                this.lineTension += 10;
+                this.fishStamina -= 6;
+            } else if (this.currentPrompt === "REEL") {
+                this.lineTension += 4;
+                this.fishStamina -= 2.5;
+            } else if (this.currentPrompt === "STABALIZE-LEFT") {
+                this.lineTension -= 6.5;
+            } else if (this.currentPrompt === "STABALIZE-RIGHT") {
+                this.lineTension -= 6.5;
+            } else if (this.currentPrompt === "SLACK") {
+                this.lineTension -= 17.5;
+            }
+         } else {
             console.log('WRONG INPUT!')
+            this.lineTension += 15;
         }
+
+        this.lastKeyPressed = null;
+        this.events.emit('tensionChange', this.lineTension);
+
     }
 
     updatePrompt(){
@@ -72,91 +106,29 @@ export class Game extends Scene
         console.log(this.currentPrompt)
 
         if (this.currentPrompt === "BIG-REEL"){
-            this.correctInput = "w"
+            this.correctInput = "w";
         } else if (this.currentPrompt === "REEL") {
-            this.correctInput = "s"
+            this.correctInput = " ";
         } else if (this.currentPrompt === "STABALIZE-LEFT") {
-            this.correctInput = "a"  
+            this.correctInput = "a";
         } else if (this.currentPrompt === "STABALIZE-RIGHT") {
-            this.correctInput = "d"
+            this.correctInput = "d";
+        } else if (this.currentPrompt === "SLACK") {
+            this.correctInput = "s"
         }
-
         // do something like, promptRepeatCounterPreventer. So like count how many times each prompt was given and if it was given three times in a row, maybe switch to a different array set that's weighted against it or like just...make it so that it can't happen a fourth time. youre smart ull figureitout...with lov, -pastbryan. ps.sotired.
     }
 
     update()
     {
-        //#region Top-Down Controller with Sprint and cancel-logic for opposing arrow keys pressed. Remember to turn off gravity.
-        /*
-        const playerSpeed = 160;
-
-        let x = 0;
-        let y = 0
-
-        if (this.cursors.up.isDown || this.wasd.up.isDown ) {
-            y -= playerSpeed;
-        }
-        if (this.cursors.down.isDown || this.wasd.down.isDown ) {
-            y += playerSpeed;
-        }
-        if (this.cursors.left.isDown || this.wasd.left.isDown ) {
-            x -= playerSpeed;
-        }
-        if (this.cursors.right.isDown || this.wasd.right.isDown ) {
-            x += playerSpeed;
+        if (this.lineTension < 0) {
+            this.lineTension = 0;
+            this.events.emit('tensionChange', this.lineTension);
         }
 
-        this.player.setVelocity(x, y);
-
-        if (x !== 0 || y !== 0) {
-            this.player.body.velocity.normalize().scale(playerSpeed);
-            if (this.cursors.shift.isDown) {
-                this.player.body.velocity.normalize().scale(playerSpeed * 1.5);
-            }
+        if (this.lineTension >= 100) {
+            //console.log("LINE SNAPPED!")
+            //this.events.emit('lineSnapped')
         }
-        */
-        //#endregion
-
-        //#region Precise Movement 2D Controller with Last Button Pressed logic and Buffer for anti-fat-fingering. Only left and right directions and No Jump(Add that later Bryan)
-        /*
-
-        // --- vvv IMPORTANT, ADD THIS TO CREATE vvv ---
-        this.stopBuffer = 0;
-        this.lastXKey = 'none'
-        this.input.keyboard.on('keydown', (e) => {
-            if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
-                this.lastXKey = 'left';
-            } else if (e.code === 'KeyD' || e.code === 'ArrowRight') {
-                this.lastXKey = 'right';
-            }
-        });
-        // --- ^^^ IMPORTANT, ADD THIS TO CREATE ^^^ ---
-
-        const playerSpeed = 160
-        const leftDown = this.wasd.left.isDown || this.cursors.left.isDown;
-        const rightDown = this.wasd.right.isDown || this.cursors.right.isDown;
-
-        if (leftDown && rightDown) {
-            this.stopBuffer = 0;
-            if (this.lastXKey === 'left'){
-                this.player.setVelocityX(-playerSpeed);
-            } else {
-                this.player.setVelocityX(playerSpeed);
-            } 
-        } else if (leftDown) {
-            this.stopBuffer = 0;
-            this.player.setVelocityX(-playerSpeed)
-        } else if (rightDown) {
-            this.stopBuffer = 0;
-            this.player.setVelocityX(playerSpeed);
-        } else {
-            this.stopBuffer++;
-            if (this.stopBuffer > 2) {
-                this.player.setVelocityX(0);
-                this.lastXKey = 'none';
-            }
-        }
-        */
-        //#endregion
     }
 }
