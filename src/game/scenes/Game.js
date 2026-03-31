@@ -133,17 +133,17 @@ export class Game extends Scene
                 this.lineTension += 10;
                 this.fishStamina -= 6;
                 this.fishDistance -= 2;
-                this.fishSpeed = 4;
+                this.fishSpeed = 5;
             } else if (this.currentPrompt === "REEL") {
                 this.lineTension += 4;
                 this.fishStamina -= 2.5;
-                this.fishDistance -= 1
+                this.fishDistance -= 1.25
             } else if (this.currentPrompt === "STABALIZE-LEFT" || this.currentPrompt === "STABALIZE-RIGHT") {
                 this.lineTension -= 6.5;
                 this.fishStun();
             } else if (this.currentPrompt === "SLACK") {
                 this.lineTension -= 17.5;
-                this.fishSpeed = 2;
+                this.fishSpeed = 3;
             }
          } else {
             console.log('WRONG INPUT!')
@@ -153,6 +153,8 @@ export class Game extends Scene
         this.lastKeyPressed = null;
         this.events.emit('tensionChange', this.lineTension);
         this.events.emit('staminaUpdate', this.fishStamina);
+        this.events.emit('distanceUpdate', this.fishDistance);
+
     }
 
     updatePrompt(){
@@ -182,7 +184,9 @@ export class Game extends Scene
             this.events.emit('tensionChange', this.lineTension);
         }
 
-        if (this.lineTension >= 100) {
+        if (this.lineTension >= 100 || this.fishDistance >= 80) {
+            this.scene.stop('UIScene');
+            this.scene.start('GameOver');
             //console.log("LINE SNAPPED!")
             //this.events.emit('lineSnapped')
         }
