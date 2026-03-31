@@ -14,9 +14,8 @@ export class Game extends Scene
         this.scene.bringToTop('UIScene');
         this.cameras.main.setBackgroundColor(0x141414);
 
-        this.player = this.physics.add.sprite(this.scale.width / 2, this.scale.height / 2, 'player');
+        this.player = this.physics.add.sprite(24, 132, 'player');
         this.player.setCollideWorldBounds(true);
-        Phaser.Display.Bounds.SetBottom(this.player, this.scale.height);
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.wasd = this.input.keyboard.addKeys ({
@@ -91,8 +90,16 @@ export class Game extends Scene
         this.greenTension = Phaser.Display.Color.IntegerToColor(0x00ff00);
         this.redTension = Phaser.Display.Color.IntegerToColor(0x8B0000);
 
+
+
+        this.boat = this.add.image(0, 144, 'boat');
+
+        const water = this.add.tileSprite(8, 166, 32, 32, 'water', 1)
+
         this.fish = this.physics.add.sprite(50, 50, 'fish').setScale(0.5);
         Phaser.Display.Bounds.SetBottom(this.fish, this.scale.height);
+
+
         // -- END OF CREATE --
     }
 

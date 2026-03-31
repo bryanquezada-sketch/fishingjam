@@ -37,6 +37,21 @@ export class Preloader extends Scene
         //CHOOSE YOUR FONT! CHECK NOTES!
         this.load.bitmapFont('globalFont', 'fonts/press_start_2p.png', 'fonts/press_start_2p.xml');
 
+        // -- NEW SHIT --
+
+        this.load.spritesheet('water', 'Water.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+
+        this.load.spritesheet('player', 'Fisherman.png', {
+            frameWidth: 48,
+            frameHeight: 48
+        })
+
+        this.load.image('hut', 'Fishing_hut.png');
+        this.load.image('boat', 'Boat.png');
+
 
 
     }
