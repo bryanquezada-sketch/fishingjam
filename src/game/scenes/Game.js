@@ -85,7 +85,56 @@ export class Game extends Scene
 
         this.fishSpeed = 2;
 
+        this.displayTension = this.add.circle(150, 80, 16, 0x66ff00, 1);
+        this.visualTension = 0;
+        
+
+        this.greenTension = Phaser.Display.Color.IntegerToColor(0x00ff00);
+        this.redTension = Phaser.Display.Color.IntegerToColor(0x8B0000);
         // -- END OF CREATE --
+    }
+
+    updateTension(targetTension){
+        if (this.tensionTween) this.tensionTween.stop();
+
+        this.tensionTween = this.tweens.add({
+            targets: this,
+            visualTension: Phaser.Math.Clamp(targetTension, 0, 100),
+            duration: 150,
+            ease: 'Linear',
+            onUpdate: () => {
+                const percentage = this.visualTension / 100;
+                const result = Phaser.Display.Color.Interpolate.ColorWithColor(
+                    this.greenTension,
+                    this.redTension,
+                    1,
+                    percentage
+                );
+
+                if (percentage >= 0.9) {
+                    if (!this.isFlashing) {
+                        this.isFlashing = true;
+                        this.flashTween = this.tweens.add({
+                            targets: this.displayTension,
+                            alpha: 0,
+                            duration: 100,
+                            yoyo: true,
+                            repeat: -1
+                        });
+                    }
+
+                } else {
+                    if (this.isFlashing) {
+                        if (this.flashTween) this.flashTween.stop();
+                        this.isFlashing = false;
+                        this.displayTension.setAlpha(1);
+                    }
+                }
+
+                const hex = Phaser.Display.Color.GetColor(result.r, result.g, result.b);
+                this.displayTension.setFillStyle(hex);
+            }
+        })
     }
 
     fishMove(){
@@ -124,6 +173,7 @@ export class Game extends Scene
     addPassiveTension(){
         this.lineTension += 1;
         this.events.emit('tensionChange', this.lineTension);
+        this.updateTension(this.lineTension);
     }
 
     checkPromptMatch(){
@@ -134,20 +184,24 @@ export class Game extends Scene
                 this.fishStamina -= 6;
                 this.fishDistance -= 2;
                 this.fishSpeed = 5;
+                this.updateTension(this.lineTension);
             } else if (this.currentPrompt === "REEL") {
                 this.lineTension += 3.5; //originally 4. Testing...
                 this.fishStamina -= 2.5;
                 this.fishDistance -= 1.25
+                this.updateTension(this.lineTension);
             } else if (this.currentPrompt === "STABALIZE-LEFT" || this.currentPrompt === "STABALIZE-RIGHT") {
                 this.lineTension -= 6.5;
                 this.fishStun();
             } else if (this.currentPrompt === "SLACK") {
                 this.lineTension -= 17.5;
                 this.fishSpeed = 3;
+                this.updateTension(this.lineTension);
             }
          } else {
             console.log('WRONG INPUT!')
             this.lineTension += 15;
+            this.updateTension(this.lineTension);
         }
 
         this.lastKeyPressed = null;
