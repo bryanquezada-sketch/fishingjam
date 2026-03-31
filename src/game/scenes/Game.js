@@ -40,7 +40,7 @@ export class Game extends Scene
         this.input.keyboard.on('keydown', (e) => {
             this.lastKeyPressed = e;
             console.log(this.lastKeyPressed.key);
-            this.checkPromptMatch();
+//            this.checkPromptMatch();
         });
 
         this.fishTimerMin = 2000
@@ -155,7 +155,7 @@ export class Game extends Scene
 
         console.log("FISH IS STUNNED AND NOT REGENERATING");
         
-        this.time.delayedCall(3000, () =>{
+        this.time.delayedCall(500, () =>{
             this.fishIsStunned = false;
             this.fishRegenRate = 1.25;
             this.fishSpeed = 2;
@@ -177,34 +177,34 @@ export class Game extends Scene
     }
 
     checkPromptMatch(){
+        if (!this.lastKeyPressed) return;
         if (this.lastKeyPressed.key.toLowerCase() === this.correctInput) {
             //console.log('CORRECT INPUT!');
             if (this.currentPrompt === "BIG-REEL") {
                 this.lineTension += 10;
                 this.fishStamina -= 6;
-                this.fishDistance -= 2;
+                this.fishDistance -= 2.5;
                 this.fishSpeed = 5;
-                this.updateTension(this.lineTension);
             } else if (this.currentPrompt === "REEL") {
                 this.lineTension += 3.5; //originally 4. Testing...
                 this.fishStamina -= 2.5;
                 this.fishDistance -= 1.25
-                this.updateTension(this.lineTension);
             } else if (this.currentPrompt === "STABALIZE-LEFT" || this.currentPrompt === "STABALIZE-RIGHT") {
                 this.lineTension -= 6.5;
                 this.fishStun();
             } else if (this.currentPrompt === "SLACK") {
                 this.lineTension -= 17.5;
                 this.fishSpeed = 3;
-                this.updateTension(this.lineTension);
             }
          } else {
             console.log('WRONG INPUT!')
             this.lineTension += 15;
-            this.updateTension(this.lineTension);
+            this.fishIsStunned = false;
+            this.fishSpeed += 1.5;
         }
 
         this.lastKeyPressed = null;
+        this.updateTension(this.lineTension);
         this.events.emit('tensionChange', this.lineTension);
         this.events.emit('staminaUpdate', this.fishStamina);
         this.events.emit('distanceUpdate', this.fishDistance);
@@ -249,5 +249,9 @@ export class Game extends Scene
             this.scene.stop('UIScene');
             this.scene.start('GameWin');
         }
+
+        this.checkPromptMatch();
+
+        // -- END OF UPDATE --
     }
 }
