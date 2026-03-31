@@ -28,7 +28,7 @@ export class Game extends Scene
 
         let lastKeyPressed = null;
         this.fishPrompts = [
-            "BIG",
+            "BIG-REEL",
             "REEL", "REEL", "REEL", "REEL", "REEL",
             "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT",
             "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT",
@@ -40,11 +40,25 @@ export class Game extends Scene
             lastKeyPressed = e;
             console.log(lastKeyPressed.key);
         });
+
+        this.fishTimerMin = 1200
+        this.fishTimerMax = 3000
+
+        this.activeFishingTimer = this.time.addEvent({
+            delay: Phaser.Math.Between(this.fishTimerMin, this.fishTimerMax),
+            callback: this.updatePrompt,
+            args: [],
+            callbackScope: this,
+            loop: true,
+        });
+
+        
     }
 
     updatePrompt(){
+        this.activeFishingTimer.delay = Phaser.Math.Between(this.fishTimerMin, this.fishTimerMax);
         this.currentPrompt = Phaser.Utils.Array.GetRandom(this.fishPrompts);
-        console.log(this.currentPrompt)
+        //console.log(this.currentPrompt)
         this.events.emit('promptChanged', this.currentPrompt);
 
         // do something like, promptRepeatCounterPreventer. So like count how many times each prompt was given and if it was given three times in a row, maybe switch to a different array set that's weighted against it or like just...make it so that it can't happen a fourth time. youre smart ull figureitout...with lov, -pastbryan. ps.sotired.
