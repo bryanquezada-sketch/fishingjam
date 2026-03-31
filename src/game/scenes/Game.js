@@ -66,9 +66,12 @@ export class Game extends Scene
 
         this.fishStamina = 100;
 
-        this.passiveRegeneration = this.time.addEvent({
+        this.fishFighting = this.time.addEvent({
             delay: 1000,
-            callback: this.fishRegenate,
+            callback: () => {
+                this.fishRegenate();
+                this.fishMove();
+            },
             args: [],
             callbackScope: this,
             loop: true
@@ -80,19 +83,33 @@ export class Game extends Scene
 
         this.fishDistance = 20;
 
+        this.fishSpeed = 2;
+
         // -- END OF CREATE --
+    }
+
+    fishMove(){
+        if (this.fishIsStunned) return;
+        this.events.emit('distanceUpdate', this.fishDistance);
+        if (this.fishDistance <= 100){
+            this.fishDistance += this.fishSpeed;
+        } else {
+            console.log('Fish got away...');
+        }
     }
 
     fishStun(){
         if (this.fishIsStunned) return;
         this.fishIsStunned = true;
         this.fishRegenRate = 0;
+        this.fishSpeed = 0;
 
         console.log("FISH IS STUNNED AND NOT REGENERATING");
         
         this.time.delayedCall(3000, () =>{
-            this.fishRegenRate = 1.25;
             this.fishIsStunned = false;
+            this.fishRegenRate = 1.25;
+            this.fishSpeed = 2;
         }, [], this);
     }
 
@@ -115,14 +132,18 @@ export class Game extends Scene
             if (this.currentPrompt === "BIG-REEL") {
                 this.lineTension += 10;
                 this.fishStamina -= 6;
+                this.fishDistance -= 2;
+                this.fishSpeed = 4;
             } else if (this.currentPrompt === "REEL") {
                 this.lineTension += 4;
                 this.fishStamina -= 2.5;
+                this.fishDistance -= 1
             } else if (this.currentPrompt === "STABALIZE-LEFT" || this.currentPrompt === "STABALIZE-RIGHT") {
                 this.lineTension -= 6.5;
                 this.fishStun();
             } else if (this.currentPrompt === "SLACK") {
                 this.lineTension -= 17.5;
+                this.fishSpeed = 2;
             }
          } else {
             console.log('WRONG INPUT!')

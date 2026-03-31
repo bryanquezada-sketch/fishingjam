@@ -56,7 +56,7 @@ export class UIScene extends Scene {
             this.staminaText.setText(`Fish Stamina: ${newStamina}`);
         });
 
-        this.distanceText = this.add.text(this.scale.width/2, this.scale.height / 2 - 64, `Fish Distance: 20`, {
+        this.distanceText = this.add.text(this.scale.width/2, this.scale.height / 2 - 64, `Fish Distance: 20 meters`, {
             fontSize: '16px',
             align: 'center'
         }).setOrigin(0.5);
