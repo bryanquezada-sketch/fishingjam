@@ -27,11 +27,20 @@ export class Game extends Scene
         });
 
         let lastKeyPressed = null;
+        this.fishPrompts = ["REEL", "BIG", "STABALIZE-LEFT", "STABALIZE-RIGHT", "SLACK"]
+        this.currentPrompt = null;
         
         this.input.keyboard.on('keydown', (e) => {
             lastKeyPressed = e;
             console.log(lastKeyPressed.key);
+            this.updatePrompt()
         });
+    }
+
+    updatePrompt(){
+        this.currentPrompt = Phaser.Utils.Array.GetRandom(this.fishPrompts);
+        console.log(this.currentPrompt)
+        this.events.emit('promptChanged', this.currentPrompt);
     }
 
     update()

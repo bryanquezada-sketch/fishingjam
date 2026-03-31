@@ -29,6 +29,19 @@ export class UIScene extends Scene {
                 align: 'center'
             }).setOrigin(0.5);
         });
+
+        // -- NEW SHIT --
+
+        this.fishyPrompt = this.add.text(this.scale.width/2, this.scale.height/2, `FISHY PROMPT: ${this.currentPrompt}`, {
+            fontSize: '16px',
+            align: 'center'
+        }).setOrigin(0.5);
+
+        this.gameScene.events.on('promptChanged', (newPrompt) => {
+            this.fishyPrompt.setText(`FISHY PROMPT: ${newPrompt}`);
+        });
         
+
+        // -- END OF CREATE() --
     }
 }
