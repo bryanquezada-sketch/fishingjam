@@ -90,6 +90,9 @@ export class Game extends Scene
 
         this.greenTension = Phaser.Display.Color.IntegerToColor(0x00ff00);
         this.redTension = Phaser.Display.Color.IntegerToColor(0x8B0000);
+
+        this.fish = this.physics.add.sprite(50, 50, 'fish').setScale(0.5);
+        Phaser.Display.Bounds.SetBottom(this.fish, this.scale.height);
         // -- END OF CREATE --
     }
 
@@ -248,6 +251,7 @@ export class Game extends Scene
         if (this.fishStamina <= 0) {
             this.scene.stop('UIScene');
             this.scene.start('GameWin');
+            //fishCaught += 1;
         }
 
         this.checkPromptMatch();

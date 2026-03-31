@@ -48,7 +48,7 @@ const config = {
         default: 'arcade',
         arcade: {
               // --- WORLD SETTINGS ---
-              gravity: { x: 0, y: 300 }, // Global acceleration in px/sec²
+              //gravity: { x: 0, y: 300 }, // Global acceleration in px/sec²
               //fps: 60,                   // Simulation frequency (ignored if fixedStep: false)
               fixedStep: true,           // Ensures physics steps are consistent regardless of FPS
               //timeScale: 1,              // 1.0 = normal, 2.0 = half speed, 0.5 = double speed
