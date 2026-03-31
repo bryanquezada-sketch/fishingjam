@@ -38,6 +38,7 @@ export class UIScene extends Scene {
             this.fishyPrompt.setText(`FISHY PROMPT: ${newPrompt}`);
         });
 
+        /*
         this.tensionText = this.add.text(this.scale.width/2, this.scale.height / 2 + 32, `Line Tension: 0`, {
             fontSize: '16px',
             align: 'center'
@@ -46,6 +47,7 @@ export class UIScene extends Scene {
         this.gameScene.events.on('tensionChange', (tension) => {
             this.tensionText.setText(`Line Tension: ${tension}`);
         });
+        */
 
         this.staminaText = this.add.text(this.scale.width/2, this.scale.height / 2 - 32, `Fish Stamina: 100`, {
             fontSize: '16px',

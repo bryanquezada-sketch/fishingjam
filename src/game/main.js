@@ -85,7 +85,8 @@ const config = {
         MainMenu,
         MainGame,
         UIScene,
-        GameOver
+        GameOver,
+        GameWin
     ]
 };
 

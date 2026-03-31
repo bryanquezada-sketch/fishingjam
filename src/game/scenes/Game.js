@@ -85,9 +85,8 @@ export class Game extends Scene
 
         this.fishSpeed = 2;
 
-        this.displayTension = this.add.circle(150, 80, 16, 0x66ff00, 1);
+        this.displayTension = this.add.circle(this.scale.width / 2, 80, 16, 0x66ff00, 1);
         this.visualTension = 0;
-        
 
         this.greenTension = Phaser.Display.Color.IntegerToColor(0x00ff00);
         this.redTension = Phaser.Display.Color.IntegerToColor(0x8B0000);
@@ -100,7 +99,7 @@ export class Game extends Scene
         this.tensionTween = this.tweens.add({
             targets: this,
             visualTension: Phaser.Math.Clamp(targetTension, 0, 100),
-            duration: 150,
+            duration: 200,
             ease: 'Linear',
             onUpdate: () => {
                 const percentage = this.visualTension / 100;
@@ -111,13 +110,14 @@ export class Game extends Scene
                     percentage
                 );
 
-                if (percentage >= 0.9) {
+                if (percentage >= 0.80) {
                     if (!this.isFlashing) {
                         this.isFlashing = true;
                         this.flashTween = this.tweens.add({
                             targets: this.displayTension,
                             alpha: 0,
                             duration: 100,
+                            ease: 'Power2',
                             yoyo: true,
                             repeat: -1
                         });
