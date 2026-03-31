@@ -25,6 +25,13 @@ export class Game extends Scene
             left: Phaser.Input.Keyboard.KeyCodes.A,
             right: Phaser.Input.Keyboard.KeyCodes.D,
         });
+
+        let lastKeyPressed = null;
+        
+        this.input.keyboard.on('keydown', (e) => {
+            lastKeyPressed = e;
+            console.log(lastKeyPressed.key);
+        });
     }
 
     update()
