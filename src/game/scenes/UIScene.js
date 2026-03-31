@@ -32,7 +32,7 @@ export class UIScene extends Scene {
 
         // -- NEW SHIT --
 
-        this.fishyPrompt = this.add.text(this.scale.width/2, this.scale.height/2, `FISHY PROMPT: ${this.currentPrompt}`, {
+        this.fishyPrompt = this.add.text(this.scale.width/2, this.scale.height/2, `FISHY PROMPT: GET READY`, {
             fontSize: '16px',
             align: 'center'
         }).setOrigin(0.5);

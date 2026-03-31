@@ -26,7 +26,7 @@ export class Game extends Scene
             right: Phaser.Input.Keyboard.KeyCodes.D,
         });
 
-        let lastKeyPressed = null;
+        this.lastKeyPressed = null;
         this.fishPrompts = [
             "BIG-REEL",
             "REEL", "REEL", "REEL", "REEL", "REEL",
@@ -35,10 +35,12 @@ export class Game extends Scene
             "SLACK", "SLACK"
         ]
         this.currentPrompt = null;
+        this.correctInput = null;
         
         this.input.keyboard.on('keydown', (e) => {
-            lastKeyPressed = e;
-            console.log(lastKeyPressed.key);
+            this.lastKeyPressed = e;
+            console.log(this.lastKeyPressed.key);
+            this.checkPromptMatch();
         });
 
         this.fishTimerMin = 1200
@@ -55,11 +57,29 @@ export class Game extends Scene
         
     }
 
+    checkPromptMatch(){
+        if (this.lastKeyPressed.key === this.correctInput) {
+            console.log('CORRECT INPUT!')
+        } else {
+            console.log('WRONG INPUT!')
+        }
+    }
+
     updatePrompt(){
-        this.activeFishingTimer.delay = Phaser.Math.Between(this.fishTimerMin, this.fishTimerMax);
         this.currentPrompt = Phaser.Utils.Array.GetRandom(this.fishPrompts);
-        //console.log(this.currentPrompt)
         this.events.emit('promptChanged', this.currentPrompt);
+        this.activeFishingTimer.delay = Phaser.Math.Between(this.fishTimerMin, this.fishTimerMax);
+        console.log(this.currentPrompt)
+
+        if (this.currentPrompt === "BIG-REEL"){
+            this.correctInput = "w"
+        } else if (this.currentPrompt === "REEL") {
+            this.correctInput = "s"
+        } else if (this.currentPrompt === "STABALIZE-LEFT") {
+            this.correctInput = "a"  
+        } else if (this.currentPrompt === "STABALIZE-RIGHT") {
+            this.correctInput = "d"
+        }
 
         // do something like, promptRepeatCounterPreventer. So like count how many times each prompt was given and if it was given three times in a row, maybe switch to a different array set that's weighted against it or like just...make it so that it can't happen a fourth time. youre smart ull figureitout...with lov, -pastbryan. ps.sotired.
     }
