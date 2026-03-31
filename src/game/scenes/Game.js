@@ -102,7 +102,7 @@ export class Game extends Scene
         if (this.fishIsStunned) return;
         this.fishIsStunned = true;
         this.fishRegenRate = 0;
-        this.fishSpeed = 0;
+        this.fishSpeed = 0.5;
 
         console.log("FISH IS STUNNED AND NOT REGENERATING");
         
@@ -135,7 +135,7 @@ export class Game extends Scene
                 this.fishDistance -= 2;
                 this.fishSpeed = 5;
             } else if (this.currentPrompt === "REEL") {
-                this.lineTension += 4;
+                this.lineTension += 3.5; //originally 4. Testing...
                 this.fishStamina -= 2.5;
                 this.fishDistance -= 1.25
             } else if (this.currentPrompt === "STABALIZE-LEFT" || this.currentPrompt === "STABALIZE-RIGHT") {
@@ -189,6 +189,11 @@ export class Game extends Scene
             this.scene.start('GameOver');
             //console.log("LINE SNAPPED!")
             //this.events.emit('lineSnapped')
+        }
+
+        if (this.fishStamina <= 0) {
+            this.scene.stop('UIScene');
+            this.scene.start('GameWin');
         }
     }
 }
