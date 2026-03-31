@@ -27,13 +27,18 @@ export class Game extends Scene
         });
 
         let lastKeyPressed = null;
-        this.fishPrompts = ["REEL", "BIG", "STABALIZE-LEFT", "STABALIZE-RIGHT", "SLACK"]
+        this.fishPrompts = [
+            "BIG",
+            "REEL", "REEL", "REEL", "REEL", "REEL",
+            "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT",
+            "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT",
+            "SLACK", "SLACK"
+        ]
         this.currentPrompt = null;
         
         this.input.keyboard.on('keydown', (e) => {
             lastKeyPressed = e;
             console.log(lastKeyPressed.key);
-            this.updatePrompt()
         });
     }
 
@@ -41,6 +46,8 @@ export class Game extends Scene
         this.currentPrompt = Phaser.Utils.Array.GetRandom(this.fishPrompts);
         console.log(this.currentPrompt)
         this.events.emit('promptChanged', this.currentPrompt);
+
+        // do something like, promptRepeatCounterPreventer. So like count how many times each prompt was given and if it was given three times in a row, maybe switch to a different array set that's weighted against it or like just...make it so that it can't happen a fourth time. youre smart ull figureitout...with lov, -pastbryan. ps.sotired.
     }
 
     update()
