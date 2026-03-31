@@ -8,9 +8,6 @@ export class UIScene extends Scene {
 
     create () {
         this.gameScene = this.scene.get('Game');
-        this.hpCounter = this.add.bitmapText(0, 0, `globalFont`, 'HP: 3', 16, 0);
-        this.hpCounter.setTintFill(0xffffff);
-
 
         this.gameScene.events.on('playerLost', () => {
             this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000, 0.5).setOrigin(0);
@@ -37,17 +34,35 @@ export class UIScene extends Scene {
             align: 'center'
         }).setOrigin(0.5);
 
+        this.gameScene.events.on('promptChanged', (newPrompt) => {
+            this.fishyPrompt.setText(`FISHY PROMPT: ${newPrompt}`);
+        });
+
         this.tensionText = this.add.text(this.scale.width/2, this.scale.height / 2 + 32, `Line Tension: 0`, {
             fontSize: '16px',
             align: 'center'
         }).setOrigin(0.5);
 
-        this.gameScene.events.on('promptChanged', (newPrompt) => {
-            this.fishyPrompt.setText(`FISHY PROMPT: ${newPrompt}`);
-        });
-
         this.gameScene.events.on('tensionChange', (tension) => {
             this.tensionText.setText(`Line Tension: ${tension}`);
+        });
+
+        this.staminaText = this.add.text(this.scale.width/2, this.scale.height / 2 - 32, `Fish Stamina: 100`, {
+            fontSize: '16px',
+            align: 'center'
+        }).setOrigin(0.5);
+
+        this.gameScene.events.on('staminaUpdate', (newStamina) => {
+            this.staminaText.setText(`Fish Stamina: ${newStamina}`);
+        });
+
+        this.distanceText = this.add.text(this.scale.width/2, this.scale.height / 2 - 64, `Fish Distance: 20`, {
+            fontSize: '16px',
+            align: 'center'
+        }).setOrigin(0.5);
+
+        this.gameScene.events.on('distanceUpdate', (newDistance) => {
+            this.distanceText.setText(`Fish Distance: ${newDistance} meters`);
         });
         
 

@@ -29,7 +29,7 @@ export class Game extends Scene
         this.lastKeyPressed = null;
         this.fishPrompts = [
             "BIG-REEL",
-            "REEL", "REEL", "REEL", "REEL", "REEL",
+            "REEL", "REEL", "REEL", "REEL", "REEL", "REEL", "REEL",
             "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT",
             "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT",
             "SLACK", "SLACK"
@@ -65,7 +65,43 @@ export class Game extends Scene
         });
 
         this.fishStamina = 100;
+
+        this.passiveRegeneration = this.time.addEvent({
+            delay: 1000,
+            callback: this.fishRegenate,
+            args: [],
+            callbackScope: this,
+            loop: true
+        });
+
+        this.fishIsStunned = false;
+
+        this.fishRegenRate = 1.25;
+
+        this.fishDistance = 20;
+
+        // -- END OF CREATE --
+    }
+
+    fishStun(){
+        if (this.fishIsStunned) return;
+        this.fishIsStunned = true;
+        this.fishRegenRate = 0;
+
+        console.log("FISH IS STUNNED AND NOT REGENERATING");
         
+        this.time.delayedCall(3000, () =>{
+            this.fishRegenRate = 1.25;
+            this.fishIsStunned = false;
+        }, [], this);
+    }
+
+    fishRegenate(){
+        if (this.fishIsStunned) return;
+        if (this.fishStamina >= 100) return;
+
+        this.fishStamina += this.fishRegenRate;
+        this.events.emit('staminaUpdate', this.fishStamina);
     }
 
     addPassiveTension(){
@@ -82,10 +118,9 @@ export class Game extends Scene
             } else if (this.currentPrompt === "REEL") {
                 this.lineTension += 4;
                 this.fishStamina -= 2.5;
-            } else if (this.currentPrompt === "STABALIZE-LEFT") {
+            } else if (this.currentPrompt === "STABALIZE-LEFT" || this.currentPrompt === "STABALIZE-RIGHT") {
                 this.lineTension -= 6.5;
-            } else if (this.currentPrompt === "STABALIZE-RIGHT") {
-                this.lineTension -= 6.5;
+                this.fishStun();
             } else if (this.currentPrompt === "SLACK") {
                 this.lineTension -= 17.5;
             }
@@ -96,7 +131,7 @@ export class Game extends Scene
 
         this.lastKeyPressed = null;
         this.events.emit('tensionChange', this.lineTension);
-
+        this.events.emit('staminaUpdate', this.fishStamina);
     }
 
     updatePrompt(){
