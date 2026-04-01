@@ -14,8 +14,19 @@ export class Game extends Scene
         this.scene.bringToTop('UIScene');
         this.cameras.main.setBackgroundColor(0x141414);
 
-        this.player = this.physics.add.sprite(24, 132, 'player');
+        this.hut = this.add.image(320, 180-48, 'hut');
+
+        const water = this.add.tileSprite(160, 166, 320, 32, 'water', 1)
+
+        this.player = this.physics.add.sprite(14, 130, 'player').setDepth(1);;
         this.player.setCollideWorldBounds(true);
+
+        this.boat = this.add.image(0, 148, 'boat').setDepth(2);
+
+
+        this.fish = this.physics.add.sprite(50, 168, 'fish').setScale(0.5);
+        
+        
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.wasd = this.input.keyboard.addKeys ({
@@ -84,22 +95,33 @@ export class Game extends Scene
 
         this.fishSpeed = 2;
 
-        this.displayTension = this.add.circle(this.scale.width / 2, 80, 16, 0x66ff00, 1);
+        this.displayTension = this.add.circle(this.player.x, this.player.y, 16, 0x66ff00, 1);
+        this.displayTension.setDepth(0);
+
         this.visualTension = 0;
 
         this.greenTension = Phaser.Display.Color.IntegerToColor(0x00ff00);
         this.redTension = Phaser.Display.Color.IntegerToColor(0x8B0000);
 
 
+        this.anims.create({
+            key: 'idle',
+            frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3}),
+            frameRate: 5,
+            repeat: -1
+        })
 
-        this.boat = this.add.image(0, 144, 'boat');
 
-        const water = this.add.tileSprite(8, 166, 32, 32, 'water', 1)
+        this.anims.create({
+            key: 'hook',
+            frames: this.anims.generateFrameNumbers('player', { start: 4, end: 9}),
+            frameRate: 5,
+        })
 
-        this.fish = this.physics.add.sprite(50, 50, 'fish').setScale(0.5);
-        Phaser.Display.Bounds.SetBottom(this.fish, this.scale.height);
+        this.fishCaught = 0;
 
 
+        this.player.play('idle');
         // -- END OF CREATE --
     }
 
@@ -161,11 +183,11 @@ export class Game extends Scene
         if (this.fishIsStunned) return;
         this.fishIsStunned = true;
         this.fishRegenRate = 0;
-        this.fishSpeed = 0.5;
+        this.fishSpeed = 0;
 
         console.log("FISH IS STUNNED AND NOT REGENERATING");
         
-        this.time.delayedCall(500, () =>{
+        this.time.delayedCall(750, () =>{
             this.fishIsStunned = false;
             this.fishRegenRate = 1.25;
             this.fishSpeed = 2;
@@ -193,12 +215,11 @@ export class Game extends Scene
             if (this.currentPrompt === "BIG-REEL") {
                 this.lineTension += 10;
                 this.fishStamina -= 6;
-                this.fishDistance -= 2.5;
-                this.fishSpeed = 5;
+                this.fishDistance -= 5;
             } else if (this.currentPrompt === "REEL") {
                 this.lineTension += 3.5; //originally 4. Testing...
                 this.fishStamina -= 2.5;
-                this.fishDistance -= 1.25
+                this.fishDistance -= 2.5
             } else if (this.currentPrompt === "STABALIZE-LEFT" || this.currentPrompt === "STABALIZE-RIGHT") {
                 this.lineTension -= 6.5;
                 this.fishStun();
@@ -210,7 +231,11 @@ export class Game extends Scene
             console.log('WRONG INPUT!')
             this.lineTension += 15;
             this.fishIsStunned = false;
-            this.fishSpeed += 1.5;
+            this.fishSpeed = 4;
+        }
+
+        if (this.fishDistance <= 15) {
+            this.fishDistance = 15;
         }
 
         this.lastKeyPressed = null;
@@ -241,8 +266,18 @@ export class Game extends Scene
         // do something like, promptRepeatCounterPreventer. So like count how many times each prompt was given and if it was given three times in a row, maybe switch to a different array set that's weighted against it or like just...make it so that it can't happen a fourth time. youre smart ull figureitout...with lov, -pastbryan. ps.sotired.
     }
 
+    catchFish(){
+        this.fishCaught += 1;
+        this.events.emit('fishCaught', this.fishCaught);
+    }
+
     update()
     {
+        const targetX = this.fishDistance * 3;
+
+        this.fish.x = Phaser.Math.Linear(this.fish.x, targetX, 0.1);
+
+
         if (this.lineTension < 0) {
             this.lineTension = 0;
             this.events.emit('tensionChange', this.lineTension);
@@ -256,9 +291,10 @@ export class Game extends Scene
         }
 
         if (this.fishStamina <= 0) {
-            this.scene.stop('UIScene');
-            this.scene.start('GameWin');
-            //fishCaught += 1;
+            this.player.play('hook');
+            //this.scene.stop('UIScene');
+            //this.scene.start('GameWin');
+            this.catchFish();
         }
 
         this.checkPromptMatch();

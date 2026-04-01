@@ -29,13 +29,13 @@ export class UIScene extends Scene {
 
         // -- NEW SHIT --
 
-        this.fishyPrompt = this.add.text(this.scale.width/2, this.scale.height/2, `FISHY PROMPT: GET READY`, {
+        this.fishyPrompt = this.add.text(this.scale.width/2, this.scale.height/2, `FISHY PROMPT:\nGET READY`, {
             fontSize: '16px',
             align: 'center'
         }).setOrigin(0.5);
 
         this.gameScene.events.on('promptChanged', (newPrompt) => {
-            this.fishyPrompt.setText(`FISHY PROMPT: ${newPrompt}`);
+            this.fishyPrompt.setText(`FISHY PROMPT:\n${newPrompt}`);
         });
 
         /*
@@ -49,15 +49,15 @@ export class UIScene extends Scene {
         });
         */
 
-        this.staminaText = this.add.text(this.scale.width/2, this.scale.height / 2 - 32, `Fish Stamina: 100`, {
-            fontSize: '16px',
-            align: 'center'
-        }).setOrigin(0.5);
+        this.staminaText = this.add.text(this.scale.width - 4, 14, `Fish Stamina: 100`, {
+            fontSize: '12px',
+        }).setOrigin(1);
 
         this.gameScene.events.on('staminaUpdate', (newStamina) => {
-            this.staminaText.setText(`Fish Stamina: ${newStamina}`);
+            this.staminaText.setText(`Fish Stamina: ${newStamina} `);
         });
 
+        /*
         this.distanceText = this.add.text(this.scale.width/2, this.scale.height / 2 - 64, `Fish Distance: 20 meters`, {
             fontSize: '16px',
             align: 'center'
@@ -65,6 +65,15 @@ export class UIScene extends Scene {
 
         this.gameScene.events.on('distanceUpdate', (newDistance) => {
             this.distanceText.setText(`Fish Distance: ${newDistance} meters`);
+        });
+        */
+
+        this.fishCount = this.add.text(4, 0, `Fish Caught: 0`, {
+            fontSize: '12px',
+        }).setOrigin(0);
+
+        this.gameScene.events.on('fishCaught', (addFish) => {
+            this.fishCount.setText(` Fish Caught: ${addFish}`);
         });
         
 

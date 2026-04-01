@@ -60,7 +60,7 @@ const config = {
               //forceX: false,             // Forces X-axis separation before Y
               
               // --- DEBUG SETTINGS ---
-              debug: true,               // Master switch for all debug visuals
+              //debug: true,               // Master switch for all debug visuals
               //debugShowBody: true,       // Draw dynamic body outlines
               //debugShowStaticBody: true, // Draw static body outlines (blue by default)
               //debugShowVelocity: true,   // Draw green vectors for movement direction
