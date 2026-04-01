@@ -11,34 +11,78 @@ export class MainMenu extends Scene
     {
         this.add.image(0, 0, 'background').setOrigin(0).setDisplaySize(this.scale.width, this.scale.height);
 
-        const phaserLogo = this.add.image(this.scale.width / 2, this.scale.height / 2, 'logo').setOrigin(0.5).setScale(0.5);
+        const tutorial = this.add.image(this.scale.width / 2, this.scale.height / 2, 'tutorial').setOrigin(0.5).setScale(0.3);
 
-        const madeWith = this.add.bitmapText(this.scale.width / 2, this.scale.height / 2 - 40, 'globalFont', 'M A D E  W I T H', 8).setOrigin(0.5);
-        madeWith.setTintFill(0xffffff);
-        const startClick = this.add.bitmapText(this.scale.width / 2, this.scale.height / 2 + 45, 'globalFont', 'Click to Start', 14).setOrigin(0.5);
+        const tutorialText = this.add.bitmapText(
+            this.scale.width / 2, 
+            this.scale.height / 2 -45,
+            'globalFont', 'Pay attention\nto the prompts!\nMash buttons\naccordingly!',
+            12
+            ).setOrigin(0.5).setCenterAlign();
 
-        this.add.bitmapText(400, 300, 'globalFont', 'SCORE: 100', 16, 0);
+        tutorialText.setTintFill(0xff0000);
 
-        this.tweens.add({
-            targets: startClick,
-            alpha: 0,
-            duration: 1,
-            yoyo: true,
-            hold: 500,
-            repeat: -1,
-            repeatDelay: 1500,
-            ease: 'Stepped',
-            easeParams: [1]
-        })
+        const oval = this.add.ellipse(160, 90, 200, 35).setStrokeStyle(2, 0xff0000, 1).setSmoothness(64);
 
-        
-        this.input.once('pointerdown', () => {
+        let clicks = 0;
 
-            this.cameras.main.fadeOut(750, 0, 0, 0);
+        this.input.on('pointerdown', () => {
+            clicks += 1;
 
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-                this.scene.start('Game');
-            })
+            if (clicks === 1) {
+                tutorialText.y = 120;
+                tutorialText.setText(`Don't let the fish\nget too far\naway!`);
+                oval.x = 150;
+                oval.y = 160;
+                oval.setSize(24, 24);
+            }
+
+            //320 x 180
+
+            if (clicks === 2) {
+                tutorialText.x = 240;
+                tutorialText.y = 48;
+                tutorialText.setText('To catch fish,\nstamina MUST\nreach ZERO!');
+                oval.x = 244;
+                oval.y = 12;
+                oval.setSize(124, 24);
+            }
+
+            if (clicks === 3) {
+                tutorialText.x = this.scale.width/2;
+                tutorialText.y = this.scale.height/2 - 24;
+                tutorialText.setText('Your line has\nTENSION\nas indicated by the\nsky flashing\nToo much TENSION\n and your string\nwill SNAP!');
+                oval.destroy();
+            }
+
+
+            if (clicks === 4) {
+                tutorialText.y = this.scale.height/2-48;
+                tutorialText.setText(`Pulling (A/D): STUNS fish\n to keeping it from moving\nand its STAMINA from RECOVERING.\n`);
+            }
+
+            if (clicks === 5) {
+                tutorialText.y = this.scale.height/2-48;
+                tutorialText.setText(`Reeling (Space/W): Drains fish's STAMINA.\nBig Reel drains faster\nbut spikes TENSION!`);
+            }
+
+            if (clicks === 6) {
+                tutorialText.y = this.scale.height/2-48;
+                tutorialText.setText(`Slack (S): Quickly drops TENSION\nbut allows fish to\nREGEN and gain DISTANCE`);
+            }
+
+            if (clicks === 7) {
+                tutorialText.x = this.scale.width/2;
+                tutorialText.setText(`That's it!\nClick again to START!`);
+            }
+
+            if (clicks === 8){
+                this.cameras.main.fadeOut(750, 0, 0, 0);
+
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                    this.scene.start('Game');
+                })
+            }
 
         });
     }

@@ -39,8 +39,8 @@ export class Game extends Scene
         this.fishPrompts = [
             "BIG REEL [SPAM W]",
             "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']",
-            "STAND FIRM [SPAM 'A']", "STAND FIRM [SPAM 'A']", "STAND FIRM [SPAM 'A']", "STAND FIRM [SPAM 'A']", "STAND FIRM [SPAM 'A']", "STAND FIRM [SPAM 'A']",
-            "STAND FIRM [SPAM 'D']", "STAND FIRM [SPAM 'D']", "STAND FIRM [SPAM 'D']", "STAND FIRM [SPAM 'D']", "STAND FIRM [SPAM 'D']", "STAND FIRM [SPAM 'D']",
+            "PULL LEFT [SPAM 'A']", "PULL LEFT [SPAM 'A']", "PULL LEFT [SPAM 'A']", "PULL LEFT [SPAM 'A']", "PULL LEFT [SPAM 'A']", "PULL LEFT [SPAM 'A']",
+            "PULL RIGHT [SPAM 'D']", "PULL RIGHT [SPAM 'D']", "PULL RIGHT [SPAM 'D']", "PULL RIGHT [SPAM 'D']", "PULL RIGHT [SPAM 'D']", "PULL RIGHT [SPAM 'D']",
             "SLACK [SPAM 'S']", "SLACK [SPAM 'S']"
         ]
         this.currentPrompt = null;
@@ -219,12 +219,11 @@ export class Game extends Scene
                 this.lineTension += 3.5; //originally 4. Testing...
                 this.fishStamina -= 2.5;
                 this.fishDistance -= 2.5
-            } else if (this.currentPrompt === "STAND FIRM [SPAM 'A']" || this.currentPrompt === "STAND FIRM [SPAM 'D']") {
+            } else if (this.currentPrompt === "PULL LEFT [SPAM 'A']" || this.currentPrompt === "PULL RIGHT [SPAM 'D']") {
                 this.lineTension -= 6.5;
                 this.fishStun();
             } else if (this.currentPrompt === "SLACK [SPAM 'S']") {
                 this.lineTension -= 17.5;
-                this.fishSpeed = 3;
             }
          } else {
             console.log('WRONG INPUT!')
@@ -255,12 +254,13 @@ export class Game extends Scene
             this.correctInput = "w";
         } else if (this.currentPrompt === "REEL [SPAM 'SPACEBAR']") {
             this.correctInput = " ";
-        } else if (this.currentPrompt === "STAND FIRM [SPAM 'A']") {
+        } else if (this.currentPrompt === "PULL LEFT [SPAM 'A']") {
             this.correctInput = "a";
-        } else if (this.currentPrompt === "STAND FIRM [SPAM 'D']") {
+        } else if (this.currentPrompt === "PULL RIGHT [SPAM 'D']") {
             this.correctInput = "d";
         } else if (this.currentPrompt === "SLACK [SPAM 'S']") {
             this.correctInput = "s"
+            this.fishSpeed = 3;
         }
     }
 

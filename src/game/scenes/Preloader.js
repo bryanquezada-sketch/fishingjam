@@ -52,6 +52,7 @@ export class Preloader extends Scene
         this.load.image('hut', 'Fishing_hut.png');
         this.load.image('boat', 'Boat.png');
         this.load.image('fish', 'Icons_04.png');
+        this.load.image('tutorial', 'tutorial.png');
 
 
     }
