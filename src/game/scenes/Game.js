@@ -327,9 +327,8 @@ export class Game extends Scene
             this.endGame = true;
             this.player.play('hook', true);
             this.activeFishingTimer.destroy();
+            this.fishFighting.destroy()
             this.events.emit('fishHooked')
-
-
 
             this.time.delayedCall(500, () => {
                 this.fish.destroy()
