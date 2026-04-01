@@ -58,12 +58,12 @@ export class MainMenu extends Scene
 
             if (clicks === 4) {
                 tutorialText.y = this.scale.height/2-48;
-                tutorialText.setText(`Pulling (A/D): STUNS fish\n to keeping it from moving\nand its STAMINA from RECOVERING.\n`);
+                tutorialText.setText(`Pulling (A/D): STUNS fish\n to keeping it from moving\nand its STAMINA\nfrom RECOVERING.`);
             }
 
             if (clicks === 5) {
                 tutorialText.y = this.scale.height/2-48;
-                tutorialText.setText(`Reeling (Space/W): Drains fish's STAMINA.\nBig Reel drains faster\nbut spikes TENSION!`);
+                tutorialText.setText(`Reeling (Space/W): Drains\nfish's STAMINA. Big Reel\ndrains faster\nbut spikes TENSION!`);
             }
 
             if (clicks === 6) {
