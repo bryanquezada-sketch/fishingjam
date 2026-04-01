@@ -14,17 +14,16 @@ export class Game extends Scene
         this.scene.bringToTop('UIScene');
         this.cameras.main.setBackgroundColor(0x141414);
 
-        this.hut = this.add.image(320, 180-48, 'hut');
+        this.hut = this.add.image(320, 180-48, 'hut').setDepth(2);
 
-        const water = this.add.tileSprite(160, 166, 320, 32, 'water', 1)
+        const water = this.add.tileSprite(160, 166, 320, 32, 'water', 1).setDepth(3)
 
         this.player = this.physics.add.sprite(14, 130, 'player').setDepth(1);;
         this.player.setCollideWorldBounds(true);
 
-        this.boat = this.add.image(0, 148, 'boat').setDepth(2);
+        this.boat = this.add.image(0, 148, 'boat').setDepth(4);
 
-
-        this.fish = this.physics.add.sprite(50, 168, 'fish').setScale(0.5);
+        this.fish = this.physics.add.sprite(50, 168, 'fish').setScale(0.5).setDepth(5);
         
         
 
@@ -38,11 +37,11 @@ export class Game extends Scene
 
         this.lastKeyPressed = null;
         this.fishPrompts = [
-            "BIG-REEL",
-            "REEL", "REEL", "REEL", "REEL", "REEL", "REEL", "REEL",
-            "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT", "STABALIZE-LEFT",
-            "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT", "STABALIZE-RIGHT",
-            "SLACK", "SLACK"
+            "BIG REEL [SPAM W]",
+            "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']",
+            "STAND FIRM [SPAM 'A']", "STAND FIRM [SPAM 'A']", "STAND FIRM [SPAM 'A']", "STAND FIRM [SPAM 'A']", "STAND FIRM [SPAM 'A']", "STAND FIRM [SPAM 'A']",
+            "STAND FIRM [SPAM 'D']", "STAND FIRM [SPAM 'D']", "STAND FIRM [SPAM 'D']", "STAND FIRM [SPAM 'D']", "STAND FIRM [SPAM 'D']", "STAND FIRM [SPAM 'D']",
+            "SLACK [SPAM 'S']", "SLACK [SPAM 'S']"
         ]
         this.currentPrompt = null;
         this.correctInput = null;
@@ -95,12 +94,12 @@ export class Game extends Scene
 
         this.fishSpeed = 2;
 
-        this.displayTension = this.add.circle(this.player.x, this.player.y, 16, 0x66ff00, 1);
+        this.displayTension = this.add.circle(this.scale.width / 2, this.scale.height / 2, 256, 0x87CEEB, 1);
         this.displayTension.setDepth(0);
 
         this.visualTension = 0;
 
-        this.greenTension = Phaser.Display.Color.IntegerToColor(0x00ff00);
+        this.greenTension = Phaser.Display.Color.IntegerToColor(0x87CEEB);
         this.redTension = Phaser.Display.Color.IntegerToColor(0x8B0000);
 
 
@@ -212,18 +211,18 @@ export class Game extends Scene
         if (!this.lastKeyPressed) return;
         if (this.lastKeyPressed.key.toLowerCase() === this.correctInput) {
             //console.log('CORRECT INPUT!');
-            if (this.currentPrompt === "BIG-REEL") {
+            if (this.currentPrompt === "BIG REEL [SPAM W]") {
                 this.lineTension += 10;
                 this.fishStamina -= 6;
                 this.fishDistance -= 5;
-            } else if (this.currentPrompt === "REEL") {
+            } else if (this.currentPrompt === "REEL [SPAM 'SPACEBAR']") {
                 this.lineTension += 3.5; //originally 4. Testing...
                 this.fishStamina -= 2.5;
                 this.fishDistance -= 2.5
-            } else if (this.currentPrompt === "STABALIZE-LEFT" || this.currentPrompt === "STABALIZE-RIGHT") {
+            } else if (this.currentPrompt === "STAND FIRM [SPAM 'A']" || this.currentPrompt === "STAND FIRM [SPAM 'D']") {
                 this.lineTension -= 6.5;
                 this.fishStun();
-            } else if (this.currentPrompt === "SLACK") {
+            } else if (this.currentPrompt === "SLACK [SPAM 'S']") {
                 this.lineTension -= 17.5;
                 this.fishSpeed = 3;
             }
@@ -252,18 +251,17 @@ export class Game extends Scene
         this.activeFishingTimer.delay = Phaser.Math.Between(this.fishTimerMin, this.fishTimerMax);
         console.log(this.currentPrompt)
 
-        if (this.currentPrompt === "BIG-REEL"){
+        if (this.currentPrompt === "BIG REEL [SPAM W]"){
             this.correctInput = "w";
-        } else if (this.currentPrompt === "REEL") {
+        } else if (this.currentPrompt === "REEL [SPAM 'SPACEBAR']") {
             this.correctInput = " ";
-        } else if (this.currentPrompt === "STABALIZE-LEFT") {
+        } else if (this.currentPrompt === "STAND FIRM [SPAM 'A']") {
             this.correctInput = "a";
-        } else if (this.currentPrompt === "STABALIZE-RIGHT") {
+        } else if (this.currentPrompt === "STAND FIRM [SPAM 'D']") {
             this.correctInput = "d";
-        } else if (this.currentPrompt === "SLACK") {
+        } else if (this.currentPrompt === "SLACK [SPAM 'S']") {
             this.correctInput = "s"
         }
-        // do something like, promptRepeatCounterPreventer. So like count how many times each prompt was given and if it was given three times in a row, maybe switch to a different array set that's weighted against it or like just...make it so that it can't happen a fourth time. youre smart ull figureitout...with lov, -pastbryan. ps.sotired.
     }
 
     catchFish(){
