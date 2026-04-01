@@ -78,6 +78,14 @@ export class UIScene extends Scene {
 
         this.gameScene.events.on('tensionSnap', () => {
             this.fishyPrompt.setText(`LINE SNAPPED!!!`);
+        })
+
+        this.gameScene.events.on('gotAway', () => {
+            this.fishyPrompt.setText(`GOT AWAY!!!`);
+        }) 
+
+        this.gameScene.events.on('fishHooked', () => {
+            this.fishyPrompt.setText(`FISH CAUGHT!!!`);
         }) 
         // -- END OF CREATE() --
     }

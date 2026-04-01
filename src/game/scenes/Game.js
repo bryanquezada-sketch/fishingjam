@@ -87,7 +87,7 @@ export class Game extends Scene
 
         this.fishRegenRate = 1.25;
 
-        this.fishDistance = Phaser.Math.Between(60, 260);
+        this.fishDistance = Phaser.Math.Between(60, 200);
 
         this.fish = this.physics.add.sprite(this.fishDistance, 168, 'fish').setScale(0.5).setDepth(5);
         this.fish.setVisible(false);
@@ -222,11 +222,11 @@ export class Game extends Scene
             if (this.currentPrompt === "BIG REEL [W]") {
                 this.lineTension += 10;
                 this.fishStamina -= 6;
-                this.fishDistance -= 5;
+                this.fishDistance -= 10;
             } else if (this.currentPrompt === "REEL ['SPACEBAR']") {
                 this.lineTension += 3.5; //originally 4. Testing...
                 this.fishStamina -= 2.5;
-                this.fishDistance -= 1
+                this.fishDistance -= 2
             } else if (this.currentPrompt === "PULL LEFT ['A']" || this.currentPrompt === "PULL RIGHT ['D']") {
                 this.lineTension -= 6.5;
                 this.fishStun();
@@ -240,8 +240,8 @@ export class Game extends Scene
             this.fishSpeed = 4;
         }
 
-        if (this.fishDistance <= 15) {
-            this.fishDistance = 15;
+        if (this.fishDistance <= 40) {
+            this.fishDistance = 40;
         }
 
         this.lastKeyPressed = null;
@@ -270,7 +270,7 @@ export class Game extends Scene
             this.correctInput = "d";
         } else if (this.currentPrompt === "SLACK ['S']") {
             this.correctInput = "s"
-            this.fishSpeed = 4;
+            this.fishSpeed = 8;
         }
     }
 
@@ -294,7 +294,7 @@ export class Game extends Scene
             }
         }
 
-        if (this.lineTension >= 100 || this.fishDistance >= 260) {
+        if (this.lineTension >= 100) {
             this.endGame = true;
             this.fish.setVelocityX(50);
             this.events.emit('tensionSnap');
@@ -308,9 +308,28 @@ export class Game extends Scene
             })
         }
 
+        if (this.fishDistance >= 260) {
+            this.endGame = true;
+            this.fish.setVelocityX(50);
+            this.events.emit('gotAway');
+            this.activeFishingTimer.destroy();
+
+            this.time.delayedCall(4000, () => {
+                this.scene.stop('UIScene');
+                this.scene.start('GameOver');
+                //console.log("LINE SNAPPED!")
+                //this.events.emit('lineSnapped')
+            })
+        }
+
+
         if (this.fishStamina <= 0) {
             this.endGame = true;
             this.player.play('hook', true);
+            this.activeFishingTimer.destroy();
+            this.events.emit('fishHooked')
+
+
 
             this.time.delayedCall(500, () => {
                 this.fish.destroy()
