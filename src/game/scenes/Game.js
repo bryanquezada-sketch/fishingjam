@@ -22,11 +22,8 @@ export class Game extends Scene
         this.player.setCollideWorldBounds(true);
 
         this.boat = this.add.image(0, 148, 'boat').setDepth(4);
-
-        this.fish = this.physics.add.sprite(50, 168, 'fish').setScale(0.5).setDepth(5);
         
         
-
         this.cursors = this.input.keyboard.createCursorKeys();
         this.wasd = this.input.keyboard.addKeys ({
             up: Phaser.Input.Keyboard.KeyCodes.W,
@@ -90,7 +87,11 @@ export class Game extends Scene
 
         this.fishRegenRate = 1.25;
 
-        this.fishDistance = 20;
+        this.fishDistance = Phaser.Math.Between(60, 260);
+
+        this.fish = this.physics.add.sprite(this.fishDistance, 168, 'fish').setScale(0.5).setDepth(5);
+        this.fish.setVisible(false);
+
 
         this.fishSpeed = 2;
 
@@ -123,6 +124,9 @@ export class Game extends Scene
         this.player.play('idle');
 
         this.endGame = false;
+        this.gameStart = false;
+
+
         // -- END OF CREATE --
     }
 
@@ -172,26 +176,28 @@ export class Game extends Scene
 
     fishMove(){
         if (this.fishIsStunned) return;
-        this.events.emit('distanceUpdate', this.fishDistance);
-        if (this.fishDistance <= 100){
+            this.events.emit('distanceUpdate', this.fishDistance);
+        if (this.fishDistance <= 260){
             this.fishDistance += this.fishSpeed;
-        } else {
-            console.log('Fish got away...');
         }
     }
 
     fishStun(){
-        if (this.fishIsStunned) return;
         this.fishIsStunned = true;
         this.fishRegenRate = 0;
         this.fishSpeed = 0;
 
-        console.log("FISH IS STUNNED AND NOT REGENERATING");
+        console.log("FISH IS STUNNED AND NOT REGENERATING/MOVING");
         
-        this.time.delayedCall(750, () =>{
+        if (this.fishRecovery) {
+            this.fishRecovery.remove();
+        }
+
+        this.fishRecovery = this.time.delayedCall(750, () =>{
             this.fishIsStunned = false;
             this.fishRegenRate = 1.25;
             this.fishSpeed = 2;
+            this.fishRecovery = null;
         }, [], this);
     }
 
@@ -247,9 +253,11 @@ export class Game extends Scene
     }
 
     updatePrompt(){
+        this.gameStart = true;
+        this.fish.setVisible(true);
         this.currentPrompt = Phaser.Utils.Array.GetRandom(this.fishPrompts);
         this.events.emit('promptChanged', this.currentPrompt);
-        this.activeFishingTimer.delay = Phaser.Math.Between(this.fishTimerMin, this.fishTimerMax);
+        // wtf is this for again? this.activeFishingTimer.delay = Phaser.Math.Between(this.fishTimerMin, this.fishTimerMax);
         console.log(this.currentPrompt)
 
         if (this.currentPrompt === "BIG REEL [W]"){
@@ -273,11 +281,10 @@ export class Game extends Scene
 
     update()
     {
+        if (!this.gameStart) return;
         if (this.endGame) return;
 
-        const targetX = this.fishDistance * 3;
-
-        this.fish.x = Phaser.Math.Linear(this.fish.x, targetX, 0.1);
+        this.fish.x = Phaser.Math.Linear(this.fish.x, this.fishDistance, 0.1);
 
 
         if (this.lineTension < 0) {
@@ -287,14 +294,17 @@ export class Game extends Scene
             }
         }
 
-        if (this.lineTension >= 100 || this.fishDistance >= 80) {
+        if (this.lineTension >= 100 || this.fishDistance >= 260) {
             this.endGame = true;
             this.fish.setVelocityX(50);
+            this.events.emit('tensionSnap');
+            this.activeFishingTimer.destroy();
 
             this.time.delayedCall(4000, () => {
-            this.scene.start('GameOver');
-            //console.log("LINE SNAPPED!")
-            //this.events.emit('lineSnapped')
+                this.scene.stop('UIScene');
+                this.scene.start('GameOver');
+                //console.log("LINE SNAPPED!")
+                //this.events.emit('lineSnapped')
             })
         }
 

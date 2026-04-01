@@ -75,6 +75,10 @@ export class UIScene extends Scene {
         this.gameScene.events.on('fishCaught', (addFish) => {
             this.fishCount.setText(` Fish Caught: ${addFish}`);
         });
+
+        this.gameScene.events.on('tensionSnap', () => {
+            this.fishyPrompt.setText(`LINE SNAPPED!!!`);
+        }) 
         // -- END OF CREATE() --
     }
 }
