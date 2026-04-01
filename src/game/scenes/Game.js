@@ -37,11 +37,11 @@ export class Game extends Scene
 
         this.lastKeyPressed = null;
         this.fishPrompts = [
-            "BIG REEL [SPAM W]",
-            "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']", "REEL [SPAM 'SPACEBAR']",
-            "PULL LEFT [SPAM 'A']", "PULL LEFT [SPAM 'A']", "PULL LEFT [SPAM 'A']", "PULL LEFT [SPAM 'A']", "PULL LEFT [SPAM 'A']", "PULL LEFT [SPAM 'A']",
-            "PULL RIGHT [SPAM 'D']", "PULL RIGHT [SPAM 'D']", "PULL RIGHT [SPAM 'D']", "PULL RIGHT [SPAM 'D']", "PULL RIGHT [SPAM 'D']", "PULL RIGHT [SPAM 'D']",
-            "SLACK [SPAM 'S']", "SLACK [SPAM 'S']"
+            "BIG REEL [W]",
+            "REEL ['SPACEBAR']", "REEL ['SPACEBAR']", "REEL ['SPACEBAR']", "REEL ['SPACEBAR']", "REEL ['SPACEBAR']", "REEL ['SPACEBAR']", "REEL ['SPACEBAR']",
+            "PULL LEFT ['A']", "PULL LEFT ['A']", "PULL LEFT ['A']", "PULL LEFT ['A']", "PULL LEFT ['A']", "PULL LEFT ['A']",
+            "PULL RIGHT ['D']", "PULL RIGHT ['D']", "PULL RIGHT ['D']", "PULL RIGHT ['D']", "PULL RIGHT ['D']", "PULL RIGHT ['D']",
+            "SLACK ['S']", "SLACK ['S']"
         ]
         this.currentPrompt = null;
         this.correctInput = null;
@@ -115,12 +115,14 @@ export class Game extends Scene
             key: 'hook',
             frames: this.anims.generateFrameNumbers('player', { start: 4, end: 9}),
             frameRate: 5,
+            repeat: 0
         })
 
         this.fishCaught = 0;
 
-
         this.player.play('idle');
+
+        this.endGame = false;
         // -- END OF CREATE --
     }
 
@@ -211,18 +213,18 @@ export class Game extends Scene
         if (!this.lastKeyPressed) return;
         if (this.lastKeyPressed.key.toLowerCase() === this.correctInput) {
             //console.log('CORRECT INPUT!');
-            if (this.currentPrompt === "BIG REEL [SPAM W]") {
+            if (this.currentPrompt === "BIG REEL [W]") {
                 this.lineTension += 10;
                 this.fishStamina -= 6;
                 this.fishDistance -= 5;
-            } else if (this.currentPrompt === "REEL [SPAM 'SPACEBAR']") {
+            } else if (this.currentPrompt === "REEL ['SPACEBAR']") {
                 this.lineTension += 3.5; //originally 4. Testing...
                 this.fishStamina -= 2.5;
-                this.fishDistance -= 2.5
-            } else if (this.currentPrompt === "PULL LEFT [SPAM 'A']" || this.currentPrompt === "PULL RIGHT [SPAM 'D']") {
+                this.fishDistance -= 1
+            } else if (this.currentPrompt === "PULL LEFT ['A']" || this.currentPrompt === "PULL RIGHT ['D']") {
                 this.lineTension -= 6.5;
                 this.fishStun();
-            } else if (this.currentPrompt === "SLACK [SPAM 'S']") {
+            } else if (this.currentPrompt === "SLACK ['S']") {
                 this.lineTension -= 17.5;
             }
          } else {
@@ -250,17 +252,17 @@ export class Game extends Scene
         this.activeFishingTimer.delay = Phaser.Math.Between(this.fishTimerMin, this.fishTimerMax);
         console.log(this.currentPrompt)
 
-        if (this.currentPrompt === "BIG REEL [SPAM W]"){
+        if (this.currentPrompt === "BIG REEL [W]"){
             this.correctInput = "w";
-        } else if (this.currentPrompt === "REEL [SPAM 'SPACEBAR']") {
+        } else if (this.currentPrompt === "REEL ['SPACEBAR']") {
             this.correctInput = " ";
-        } else if (this.currentPrompt === "PULL LEFT [SPAM 'A']") {
+        } else if (this.currentPrompt === "PULL LEFT ['A']") {
             this.correctInput = "a";
-        } else if (this.currentPrompt === "PULL RIGHT [SPAM 'D']") {
+        } else if (this.currentPrompt === "PULL RIGHT ['D']") {
             this.correctInput = "d";
-        } else if (this.currentPrompt === "SLACK [SPAM 'S']") {
+        } else if (this.currentPrompt === "SLACK ['S']") {
             this.correctInput = "s"
-            this.fishSpeed = 3;
+            this.fishSpeed = 4;
         }
     }
 
@@ -271,28 +273,44 @@ export class Game extends Scene
 
     update()
     {
+        if (this.endGame) return;
+
         const targetX = this.fishDistance * 3;
 
         this.fish.x = Phaser.Math.Linear(this.fish.x, targetX, 0.1);
 
 
         if (this.lineTension < 0) {
-            this.lineTension = 0;
-            this.events.emit('tensionChange', this.lineTension);
+            if (this.lineTension !== 0){
+                this.lineTension = 0;
+                this.events.emit('tensionChange', this.lineTension);
+            }
         }
 
         if (this.lineTension >= 100 || this.fishDistance >= 80) {
-            this.scene.stop('UIScene');
+            this.endGame = true;
+            this.fish.setVelocityX(50);
+
+            this.time.delayedCall(4000, () => {
             this.scene.start('GameOver');
             //console.log("LINE SNAPPED!")
             //this.events.emit('lineSnapped')
+            })
         }
 
         if (this.fishStamina <= 0) {
-            this.player.play('hook');
-            //this.scene.stop('UIScene');
-            //this.scene.start('GameWin');
-            this.catchFish();
+            this.endGame = true;
+            this.player.play('hook', true);
+
+            this.time.delayedCall(500, () => {
+                this.fish.destroy()
+                this.catchFish();
+            });
+
+            this.time.delayedCall(4000, () => {
+                this.scene.stop('UIScene');
+                this.scene.start('GameWin');
+            });
         }
 
         this.checkPromptMatch();

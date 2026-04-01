@@ -75,8 +75,6 @@ export class UIScene extends Scene {
         this.gameScene.events.on('fishCaught', (addFish) => {
             this.fishCount.setText(` Fish Caught: ${addFish}`);
         });
-        
-
         // -- END OF CREATE() --
     }
 }
