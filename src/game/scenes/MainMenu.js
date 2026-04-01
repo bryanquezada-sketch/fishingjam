@@ -49,34 +49,28 @@ export class MainMenu extends Scene
             }
 
             if (clicks === 3) {
+                tutorial.destroy();
                 tutorialText.x = this.scale.width/2;
                 tutorialText.y = this.scale.height/2 - 24;
                 tutorialText.setText('Your line has\nTENSION\nas indicated by the\nsky flashing\nToo much TENSION\n and your string\nwill SNAP!');
                 oval.destroy();
             }
 
-
             if (clicks === 4) {
-                tutorialText.y = this.scale.height/2-48;
-                tutorialText.setText(`Pulling (A/D): STUNS fish\n to keeping it from moving\nand its STAMINA\nfrom RECOVERING.`);
+                tutorialText.y = this.scale.height/2;
+                tutorialText.setText(`Pulling (A/D): STUNS fish\nto keeping it from moving\nand its STAMINA\nfrom RECOVERING.\n\nReeling (Space/W): Drains\nfish's STAMINA. Big Reel\ndrains faster\nbut spikes TENSION!`);
             }
 
             if (clicks === 5) {
-                tutorialText.y = this.scale.height/2-48;
-                tutorialText.setText(`Reeling (Space/W): Drains\nfish's STAMINA. Big Reel\ndrains faster\nbut spikes TENSION!`);
+                tutorialText.setText(`Slack (S): Quickly drops\nTENSION but allows fish to\nREGEN and gain DISTANCE`);
             }
 
             if (clicks === 6) {
-                tutorialText.y = this.scale.height/2-48;
-                tutorialText.setText(`Slack (S): Quickly drops TENSION\nbut allows fish to\nREGEN and gain DISTANCE`);
-            }
-
-            if (clicks === 7) {
                 tutorialText.x = this.scale.width/2;
                 tutorialText.setText(`That's it!\nClick again to START!`);
             }
 
-            if (clicks === 8){
+            if (clicks === 7){
                 this.cameras.main.fadeOut(750, 0, 0, 0);
 
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
