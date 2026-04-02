@@ -78,15 +78,30 @@ export class UIScene extends Scene {
 
         this.gameScene.events.on('tensionSnap', () => {
             this.fishyPrompt.setText(`LINE SNAPPED!!!`);
-        })
+        });
 
         this.gameScene.events.on('gotAway', () => {
             this.fishyPrompt.setText(`GOT AWAY!!!`);
-        }) 
+        });
 
         this.gameScene.events.on('fishHooked', () => {
             this.fishyPrompt.setText(`FISH CAUGHT!!!`);
-        }) 
+        });
+
+        const wrongButton = this.add.text(4, 0, `WRONG BUTTON!!!`, {
+            fontSize: '12px',
+            color: 0x00ff00
+        }).setOrigin(0);
+
+
+        this.gameScene.events.on('wrongButton', () => {
+            wrongbutton.setVisible(true);
+        });
+
+        this.gameScene.events.on('correctButton', () => {
+            wrongbutton.setVisible(false);
+        });
+
         // -- END OF CREATE() --
     }
 }

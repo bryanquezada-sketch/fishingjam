@@ -219,6 +219,7 @@ export class Game extends Scene
         if (!this.lastKeyPressed) return;
         if (this.lastKeyPressed.key.toLowerCase() === this.correctInput) {
             //console.log('CORRECT INPUT!');
+            this.events.emit('correctButton');
             if (this.currentPrompt === "BIG REEL [W]") {
                 this.lineTension += 10;
                 this.fishStamina -= 6;
@@ -235,6 +236,7 @@ export class Game extends Scene
             }
          } else {
             console.log('WRONG INPUT!')
+            this.events.emit('wrongButton');
             this.lineTension += 15;
             this.fishIsStunned = false;
             this.fishSpeed = 4;
