@@ -26,6 +26,18 @@ export class MainMenu extends Scene
 
         let clicks = 0;
 
+        const skipButton = this.add.text(180, 155, 'SKIP TUTORIAL');
+        skipButton.setInteractive()
+        .on('pointerdown', () => {
+            clicks = -10000;
+            skipButton.destroy();
+            this.cameras.main.fadeOut(750, 0, 0, 0);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                this.scene.start('Game');
+            })
+        });
+
+
         this.input.on('pointerdown', () => {
             clicks += 1;
 

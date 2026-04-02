@@ -61,7 +61,7 @@ export class Game extends Scene
         });
 
         this.lineTension = 0;
-        
+
         this.passiveTension = this.time.addEvent({
             delay: 1000,
             callback: this.addPassiveTension,
@@ -126,13 +126,11 @@ export class Game extends Scene
         this.endGame = false;
         this.gameStart = false;
 
-
         // -- END OF CREATE --
     }
 
     updateTension(targetTension){
         if (this.tensionTween) this.tensionTween.stop();
-
 
         this.tensionTween = this.tweens.add({
             targets: this,
@@ -149,11 +147,8 @@ export class Game extends Scene
                 );
 
 
-                if (percentage >= 0.75) {
-                    this.events.emit('tensionWarning');
-                }
-
-                if (percentage >= 0.100) {
+                if (percentage >= 0.80) {
+                    this.events.emit('badTension');
                     if (!this.isFlashing) {
                         this.isFlashing = true;
                         this.flashTween = this.tweens.add({
@@ -168,7 +163,6 @@ export class Game extends Scene
 
                 } else {
                     this.events.emit('goodTension');
-
                     if (this.isFlashing) {
                         if (this.flashTween) this.flashTween.stop();
                         this.isFlashing = false;
@@ -307,7 +301,6 @@ export class Game extends Scene
 
         this.fish.x = Phaser.Math.Linear(this.fish.x, this.fishDistance, 0.1);
 
-
         if (this.lineTension < 0) {
             if (this.lineTension !== 0){
                 this.lineTension = 0;
@@ -315,7 +308,7 @@ export class Game extends Scene
             }
         }
 
-        if (this.lineTension >= 120) {
+        if (this.lineTension >= 100) {
             this.endGame = true;
             this.fish.setVelocityX(50);
             this.events.emit('tensionSnap');

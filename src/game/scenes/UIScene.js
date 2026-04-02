@@ -118,13 +118,13 @@ export class UIScene extends Scene {
         this.tweens.add({
             targets: tensionWarning,
             alpha: 0,
-            duration: 150,
+            duration: 300,
             ease: 'Power2',
             yoyo: true,
             repeat: -1
         });
 
-        this.gameScene.events.on('tensionWarning', () => {
+        this.gameScene.events.on('badTension', () => {
             tensionWarning.setVisible(true);
         });
 
