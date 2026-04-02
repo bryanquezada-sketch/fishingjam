@@ -148,6 +148,7 @@ export class Game extends Scene
                 );
 
                 if (percentage >= 0.80) {
+                    this.events.emit('tensionWarning');
                     if (!this.isFlashing) {
                         this.isFlashing = true;
                         this.flashTween = this.tweens.add({

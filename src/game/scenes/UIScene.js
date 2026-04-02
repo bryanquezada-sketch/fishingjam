@@ -110,6 +110,25 @@ export class UIScene extends Scene {
             wrongButton.setVisible(false);
         });
 
+        const tensionWarning = this.add.text(this.scale.width / 2, this.scale.height / 2 - 60, `WRONG BUTTON!!!`, {
+            fontSize: '20px',
+            color: '#00ff00'
+        }).setOrigin(0.5).setVisible(false);
+
+        this.tweens.add({
+            targets: tensionWarning,
+            alpha: 0,
+            duration: 150,
+            ease: 'Power2',
+            yoyo: true,
+            repeat: -1
+        });
+
+        this.gameScene.events.on('tensionWarning', () => {
+            tensionWarning.setVisible(true);
+        })
+
+
         // -- END OF CREATE() --
     }
 }
