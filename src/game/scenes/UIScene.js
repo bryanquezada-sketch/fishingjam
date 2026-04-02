@@ -88,18 +88,26 @@ export class UIScene extends Scene {
             this.fishyPrompt.setText(`FISH CAUGHT!!!`);
         });
 
-        const wrongButton = this.add.text(4, 0, `WRONG BUTTON!!!`, {
-            fontSize: '12px',
-            color: 0x00ff00
-        }).setOrigin(0);
+        const wrongButton = this.add.text(this.scale.width / 2, this.scale.height / 2 - 30, `WRONG BUTTON!!!`, {
+            fontSize: '18px',
+            color: '#00ff00'
+        }).setOrigin(0.5).setVisible(false);
 
+        this.tweens.add({
+            targets: wrongButton,
+            alpha: 0,
+            duration: 150,
+            ease: 'Power2',
+            yoyo: true,
+            repeat: -1
+        });
 
         this.gameScene.events.on('wrongButton', () => {
-            wrongbutton.setVisible(true);
+            wrongButton.setVisible(true);
         });
 
         this.gameScene.events.on('correctButton', () => {
-            wrongbutton.setVisible(false);
+            wrongButton.setVisible(false);
         });
 
         // -- END OF CREATE() --
