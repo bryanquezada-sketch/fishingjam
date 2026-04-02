@@ -227,13 +227,13 @@ export class Game extends Scene
             //console.log('CORRECT INPUT!');
             this.events.emit('correctButton');
             if (this.currentPrompt === "BIG REEL [W]") {
-                this.lineTension += 10;
+                this.lineTension += 13;
                 this.fishStamina -= 6;
                 this.fishDistance -= 20;
             } else if (this.currentPrompt === "REEL ['SPACEBAR']") {
                 this.lineTension += 3;
                 this.fishStamina -= 2.5;
-                this.fishDistance -= 2.75
+                this.fishDistance -= 3;
             } else if (this.currentPrompt === "PULL LEFT ['A']" || this.currentPrompt === "PULL RIGHT ['D']") {
                 this.lineTension -= 4.5;
                 this.fishStun();
