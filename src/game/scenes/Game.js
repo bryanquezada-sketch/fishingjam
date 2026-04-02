@@ -126,6 +126,9 @@ export class Game extends Scene
         this.endGame = false;
         this.gameStart = false;
 
+        this.isStruggling = false;
+
+        let fishTrueX = Phaser.Math.Linear(this.fish.x, this.fishDistance, 0.1);
         // -- END OF CREATE --
     }
 
@@ -188,6 +191,7 @@ export class Game extends Scene
         this.fishIsStunned = true;
         this.fishRegenRate = 0;
         this.fishSpeed = 0;
+        this.isStruggling = true;
 
         console.log("FISH IS STUNNED AND NOT REGENERATING/MOVING");
         
@@ -200,6 +204,7 @@ export class Game extends Scene
             this.fishRegenRate = 1.25;
             this.fishSpeed = 2;
             this.fishRecovery = null;
+            this.isStruggling = false;
         }, [], this);
     }
 
@@ -300,6 +305,13 @@ export class Game extends Scene
         if (this.endGame) return;
 
         this.fish.x = Phaser.Math.Linear(this.fish.x, this.fishDistance, 0.1);
+
+
+
+        if (this.isStruggling) {
+            this.fish.x += Phaser.Math.Between(-2, 2);
+            this.fish.y += Phaser.Math.Between(-2, 2);
+        }
 
         if (this.lineTension < 0) {
             if (this.lineTension !== 0){
