@@ -133,6 +133,7 @@ export class Game extends Scene
     updateTension(targetTension){
         if (this.tensionTween) this.tensionTween.stop();
 
+
         this.tensionTween = this.tweens.add({
             targets: this,
             visualTension: Phaser.Math.Clamp(targetTension, 0, 100),
@@ -147,8 +148,12 @@ export class Game extends Scene
                     percentage
                 );
 
-                if (percentage >= 0.80) {
+
+                if (percentage >= 0.75) {
                     this.events.emit('tensionWarning');
+                }
+
+                if (percentage >= 0.100) {
                     if (!this.isFlashing) {
                         this.isFlashing = true;
                         this.flashTween = this.tweens.add({
@@ -162,6 +167,8 @@ export class Game extends Scene
                     }
 
                 } else {
+                    this.events.emit('goodTension');
+
                     if (this.isFlashing) {
                         if (this.flashTween) this.flashTween.stop();
                         this.isFlashing = false;
@@ -233,12 +240,12 @@ export class Game extends Scene
                 this.lineTension -= 6.5;
                 this.fishStun();
             } else if (this.currentPrompt === "SLACK ['S']") {
-                this.lineTension -= 17.5;
+                this.lineTension -= 15;
             }
          } else {
             console.log('WRONG INPUT!')
             this.events.emit('wrongButton');
-            this.lineTension += 15;
+            this.lineTension += 13;
             this.fishIsStunned = false;
             this.fishSpeed = 4;
         }
@@ -308,7 +315,7 @@ export class Game extends Scene
             }
         }
 
-        if (this.lineTension >= 100) {
+        if (this.lineTension >= 120) {
             this.endGame = true;
             this.fish.setVelocityX(50);
             this.events.emit('tensionSnap');
