@@ -70,7 +70,7 @@ export class Game extends Scene
             loop: true
         });
 
-        this.fishStamina = 100;
+        this.fishStamina = 200;
 
         this.fishFighting = this.time.addEvent({
             delay: 1000,
@@ -93,7 +93,7 @@ export class Game extends Scene
         this.fish.setVisible(false);
 
 
-        this.fishSpeed = 2;
+        this.fishSpeed = 8;
 
         this.displayTension = this.add.circle(this.scale.width / 2, this.scale.height / 2, 256, 0x87CEEB, 1);
         this.displayTension.setDepth(0);
@@ -128,7 +128,6 @@ export class Game extends Scene
 
         this.isStruggling = false;
 
-        let fishTrueX = Phaser.Math.Linear(this.fish.x, this.fishDistance, 0.1);
         // -- END OF CREATE --
     }
 
@@ -202,7 +201,7 @@ export class Game extends Scene
         this.fishRecovery = this.time.delayedCall(750, () =>{
             this.fishIsStunned = false;
             this.fishRegenRate = 1.25;
-            this.fishSpeed = 2;
+            this.fishSpeed = 8;
             this.fishRecovery = null;
             this.isStruggling = false;
         }, [], this);
@@ -230,23 +229,23 @@ export class Game extends Scene
             if (this.currentPrompt === "BIG REEL [W]") {
                 this.lineTension += 10;
                 this.fishStamina -= 6;
-                this.fishDistance -= 10;
+                this.fishDistance -= 20;
             } else if (this.currentPrompt === "REEL ['SPACEBAR']") {
-                this.lineTension += 3.5; //originally 4. Testing...
+                this.lineTension += 3;
                 this.fishStamina -= 2.5;
-                this.fishDistance -= 2
+                this.fishDistance -= 2.75
             } else if (this.currentPrompt === "PULL LEFT ['A']" || this.currentPrompt === "PULL RIGHT ['D']") {
-                this.lineTension -= 6.5;
+                this.lineTension -= 4.5;
                 this.fishStun();
             } else if (this.currentPrompt === "SLACK ['S']") {
-                this.lineTension -= 15;
+                this.lineTension -= 5;
             }
          } else {
             console.log('WRONG INPUT!')
             this.events.emit('wrongButton');
             this.lineTension += 13;
             this.fishIsStunned = false;
-            this.fishSpeed = 4;
+            this.fishSpeed = 12;
         }
 
         this.lastKeyPressed = null;
@@ -275,7 +274,7 @@ export class Game extends Scene
             this.correctInput = "d";
         } else if (this.currentPrompt === "SLACK ['S']") {
             this.correctInput = "s"
-            this.fishSpeed = 8;
+            this.fishSpeed = 4;
         }
     }
 
@@ -304,13 +303,12 @@ export class Game extends Scene
         if (!this.gameStart) return;
         if (this.endGame) return;
 
-        this.fish.x = Phaser.Math.Linear(this.fish.x, this.fishDistance, 0.1);
-
-
+        this.fishTrueX = Phaser.Math.Linear(this.fish.x, this.fishDistance, 0.1);
 
         if (this.isStruggling) {
-            this.fish.x += Phaser.Math.Between(-2, 2);
-            this.fish.y += Phaser.Math.Between(-2, 2);
+            this.fish.x = this.fishTrueX + Phaser.Math.Between(-1, 1);
+        } else {
+            this.fish.x = this.fishTrueX;
         }
 
         if (this.lineTension < 0) {
@@ -320,7 +318,7 @@ export class Game extends Scene
             }
         }
 
-        if (this.lineTension >= 100) {
+        if (this.lineTension >= 120) {
             this.endGame = true;
             this.fish.setVelocityX(50);
             this.events.emit('tensionSnap');
