@@ -240,10 +240,6 @@ export class Game extends Scene
             this.fishSpeed = 4;
         }
 
-        if (this.fishDistance <= 40) {
-            this.fishDistance = 40;
-        }
-
         this.lastKeyPressed = null;
         this.updateTension(this.lineTension);
         this.events.emit('tensionChange', this.lineTension);
@@ -275,8 +271,23 @@ export class Game extends Scene
     }
 
     catchFish(){
+        this.fishDistance = 45;
         this.fishCaught += 1;
         this.events.emit('fishCaught', this.fishCaught);
+        this.endGame = true;
+            this.player.play('hook', true);
+            this.activeFishingTimer.destroy();
+            this.fishFighting.destroy()
+            this.events.emit('fishHooked')
+
+            this.time.delayedCall(500, () => {
+                this.fish.destroy()
+            });
+
+            this.time.delayedCall(4000, () => {
+                this.scene.stop('UIScene');
+                this.scene.start('GameWin');
+            });
     }
 
     update()
@@ -323,22 +334,8 @@ export class Game extends Scene
         }
 
 
-        if (this.fishStamina <= 0) {
-            this.endGame = true;
-            this.player.play('hook', true);
-            this.activeFishingTimer.destroy();
-            this.fishFighting.destroy()
-            this.events.emit('fishHooked')
-
-            this.time.delayedCall(500, () => {
-                this.fish.destroy()
-                this.catchFish();
-            });
-
-            this.time.delayedCall(4000, () => {
-                this.scene.stop('UIScene');
-                this.scene.start('GameWin');
-            });
+        if (this.fishStamina <= 0 || this.fishDistance <=45) {
+            this.catchFish();
         }
 
         this.checkPromptMatch();
