@@ -62,7 +62,7 @@ export class MainMenu extends Scene
             if (clicks === 2) {
                 tutorialText.x = 240;
                 tutorialText.y = 48;
-                tutorialText.setText('To catch fish,\nstamina MUST\nreach ZERO!');
+                tutorialText.setText('To catch fish,\nstamina MUST\nreach ZERO!\nor reach you');
                 oval.x = 244;
                 oval.y = 12;
                 oval.setSize(124, 24);

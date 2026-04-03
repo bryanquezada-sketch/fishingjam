@@ -377,7 +377,7 @@ export class Game extends Scene
         }
 
 
-        if (this.fishStamina <= 195 || this.fishDistance <=45) {
+        if (this.fishStamina <= 0 || this.fishDistance <=45) {
             if (this.fishDistance <= 45){
                 this.fishDistance = 45;
             }
