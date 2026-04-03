@@ -128,11 +128,20 @@ export class Game extends Scene
 
         this.isStruggling = false;
 
-        const bgMusic = this.sound.add('bg', {
-            loop: true
-        })
+        const bg = this.sound.get('bg');
 
-        bgMusic.play
+        if (bg) {
+            this.tweens.add({
+                targets: bg,
+                volume: 0,
+                duration: 1250,
+                onComplete: () => {
+                    bg.stop()
+                    this.sound.play('combat', { loop: true, volume: 0.5});
+                }
+            });
+        }
+        
 
         // -- END OF CREATE --
     }
@@ -263,6 +272,8 @@ export class Game extends Scene
     }
 
     updatePrompt(){
+        
+
         this.gameStart = true;
         this.fish.setVisible(true);
         this.currentPrompt = Phaser.Utils.Array.GetRandom(this.fishPrompts);
@@ -285,6 +296,11 @@ export class Game extends Scene
     }
 
     catchFish(){
+        const combat = this.sound.get('combat');
+        if (combat) {
+            combat.stop();
+        }
+        this.sound.play('bg', { loop: true });
         this.lineTension = 0;
         this.fishCaught += 1;
         this.events.emit('fishCaught', this.fishCaught);

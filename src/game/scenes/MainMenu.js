@@ -37,6 +37,14 @@ export class MainMenu extends Scene
             })
         });
 
+        if (!this.sound.get('bg')) {
+            this.bgMusic = this.sound.add('bg', {
+                volume: 0.5,
+                loop: true
+            });
+            this.bgMusic.play()
+        }
+
 
         this.input.on('pointerdown', () => {
             clicks += 1;
