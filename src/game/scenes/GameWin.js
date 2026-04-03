@@ -9,6 +9,8 @@ export class GameWin extends Scene
 
     create ()
     {
+        this.scene.stop('Game');
+
         this.cameras.main.setBackgroundColor(0x00ff00);
 
         this.add.image(0, 0, 'background').setAlpha(0.5).setOrigin(0).setDisplaySize(this.scale.width, this.scale.height);
