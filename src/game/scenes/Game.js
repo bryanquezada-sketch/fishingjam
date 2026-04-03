@@ -128,6 +128,12 @@ export class Game extends Scene
 
         this.isStruggling = false;
 
+        const bgMusic = this.sound.add('bg', {
+            loop: true
+        })
+
+        bgMusic.play
+
         // -- END OF CREATE --
     }
 

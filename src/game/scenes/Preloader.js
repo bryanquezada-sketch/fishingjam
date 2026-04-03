@@ -54,6 +54,11 @@ export class Preloader extends Scene
         this.load.image('fish', 'Icons_04.png');
         this.load.image('tutorial', 'tutorial.png');
 
+        this.load.audio('bg', 'bg-music.mp3');
+        this.load.audio('combat', 'combat.mp3');
+
+        this.load.audio('r1', 'reel1.mp3');
+        this.load.audio('r2', 'reel2.mp3');
 
     }
 
