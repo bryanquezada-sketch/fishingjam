@@ -29,13 +29,20 @@ export class UIScene extends Scene {
 
         // -- NEW SHIT --
 
-        this.fishyPrompt = this.add.text(this.scale.width/2, this.scale.height/2, `FISHY PROMPT:\nGET READY`, {
+        this.fishyPrompt = this.add.text(this.scale.width/2, this.scale.height/2, `GET READY`, {
             fontSize: '14px',
             align: 'center'
         }).setOrigin(0.5);
 
         this.gameScene.events.on('promptChanged', (newPrompt) => {
-            this.fishyPrompt.setText(`FISHY PROMPT:\n${newPrompt}`);
+            this.fishyPrompt.setText(`${newPrompt}`);
+            this.tweens.add({
+                targets: this.fishyPrompt,
+                scale: 1.2,
+                duration: 250,
+                ease: 'Power2',
+                yoyo: true,
+            });
         });
 
         /*

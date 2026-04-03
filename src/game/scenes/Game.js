@@ -87,7 +87,7 @@ export class Game extends Scene
 
         this.fishRegenRate = 1.25;
 
-        this.fishDistance = Phaser.Math.Between(60, 200);
+        this.fishDistance = Phaser.Math.Between(90, 170);
 
         this.fish = this.physics.add.sprite(this.fishDistance, 168, 'fish').setScale(0.5).setDepth(5);
         this.fish.setVisible(false);
@@ -233,7 +233,7 @@ export class Game extends Scene
             } else if (this.currentPrompt === "REEL ['SPACEBAR']") {
                 this.lineTension += 3;
                 this.fishStamina -= 2.5;
-                this.fishDistance -= 3;
+                this.fishDistance -= 4;
             } else if (this.currentPrompt === "PULL LEFT ['A']" || this.currentPrompt === "PULL RIGHT ['D']") {
                 this.lineTension -= 4.5;
                 this.fishStun();
