@@ -87,7 +87,7 @@ export class Game extends Scene
 
         this.fishRegenRate = 1.25;
 
-        this.fishDistance = Phaser.Math.Between(90, 170);
+        this.fishDistance = Phaser.Math.Between(120, 160);
 
         this.fish = this.physics.add.sprite(this.fishDistance, 168, 'fish').setScale(0.5).setDepth(5);
         this.fish.setVisible(false);
@@ -279,23 +279,31 @@ export class Game extends Scene
     }
 
     catchFish(){
-        this.fishDistance = 45;
+        this.lineTension = 0;
         this.fishCaught += 1;
         this.events.emit('fishCaught', this.fishCaught);
         this.endGame = true;
-            this.player.play('hook', true);
-            this.activeFishingTimer.destroy();
-            this.fishFighting.destroy()
-            this.events.emit('fishHooked')
+        this.activeFishingTimer.destroy();
+        this.fishFighting.destroy()
+        this.events.emit('fishHooked')
 
-            this.time.delayedCall(500, () => {
-                this.fish.destroy()
-            });
+        this.tweens.add({
+            targets: this.fish,
+            x: 45,
+            duration: 2000,
+            onComplete: () => {
+                this.player.play('hook', true);
+                this.time.delayedCall(635, () => {
+                    this.fish.destroy()
+                    this.time.delayedCall(4000, () => {
+                        this.scene.stop('UIScene');
+                        this.scene.start('GameWin');
+                    });
+                });
+            }
+        })
 
-            this.time.delayedCall(4000, () => {
-                this.scene.stop('UIScene');
-                this.scene.start('GameWin');
-            });
+        
     }
 
     update()
@@ -320,7 +328,7 @@ export class Game extends Scene
 
         if (this.lineTension >= 120) {
             this.endGame = true;
-            this.fish.setVelocityX(50);
+            this.fish.setVelocityX(115);
             this.events.emit('tensionSnap');
             this.activeFishingTimer.destroy();
 
@@ -347,7 +355,10 @@ export class Game extends Scene
         }
 
 
-        if (this.fishStamina <= 0 || this.fishDistance <=45) {
+        if (this.fishStamina <= 195 || this.fishDistance <=45) {
+            if (this.fishDistance <= 45){
+                this.fishDistance = 45;
+            }
             this.catchFish();
         }
 
